@@ -1,0 +1,61 @@
+const board = document.getElementById('board');
+const status = document.getElementById('status');
+const resetButton = document.getElementById('reset');
+let currentPlayer = '○';
+let gameActive = true;
+let cells = Array(9).fill(null);
+
+function checkWinner() {
+  const winPatterns = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8],
+    [0,4,8], [2,4,6]
+  ];
+  for (const [a, b, c] of winPatterns) {
+    if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+      return cells[a];
+    }
+  }
+  return null;
+}
+
+function handleClick(index) {
+  if (!gameActive || cells[index]) return;
+  cells[index] = currentPlayer;
+  renderBoard();
+  const winner = checkWinner();
+  if (winner) {
+    status.textContent = `勝者：${winner === '○' ? '先行' : '後攻'}`;
+    gameActive = false;
+    return;
+  }
+  if (!cells.includes(null)) {
+    status.textContent = '引き分け';
+    gameActive = false;
+    return;
+  }
+  currentPlayer = currentPlayer === '○' ? '×' : '○';
+}
+
+function renderBoard() {
+  board.innerHTML = '';
+  cells.forEach((cell, index) => {
+    const cellDiv = document.createElement('div');
+    cellDiv.className = 'cell';
+    cellDiv.textContent = cell || '';
+    cellDiv.addEventListener('click', () => handleClick(index));
+    board.appendChild(cellDiv);
+  });
+}
+
+function resetGame() {
+  cells = Array(9).fill(null);
+  currentPlayer = '○';
+  gameActive = true;
+  status.textContent = '';
+  renderBoard();
+}
+
+resetButton.addEventListener('click', resetGame);
+
+renderBoard();

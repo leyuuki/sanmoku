@@ -1,0 +1,7 @@
+<h1>三目並べ（○×ゲーム）</h1>
+
+<div id="board"></div>
+
+<div id="status"></div>
+
+<button id="reset">リセット</button>
